@@ -160,7 +160,8 @@ int main()
     VolFac = 3.7949992920124995e-29;
     PressFac = 51695201.06691862;
     TempFac = 142.0950000000000;
-    timefac = 2.09618e-12;
+    timefac = 1.95403137760e-12;
+    //timefac = 2.09618e-12;
     //strcpy(atype,"Ar");
 
   }
