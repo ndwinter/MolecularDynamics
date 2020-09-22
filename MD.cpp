@@ -27,7 +27,7 @@
 #include<stdlib.h>
 #include<math.h>
 #include<string.h>
-
+#include<time.h>
 
 // Number of particles
 int N;
@@ -650,6 +650,7 @@ double gaussdist() {
   static bool available = false;
   static double gset;
   double fac, rsq, v1, v2;
+  srand(time(NULL)); // seed random number generator
   if (!available) {
   do {
     v1 = 2.0 * rand() / double(RAND_MAX) - 1.0;
