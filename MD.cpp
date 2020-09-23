@@ -66,7 +66,7 @@ void initialize();
 //  update positions and velocities using Velocity Verlet algorithm 
 //  print particle coordinates to file for rendering via VMD or other animation software
 //  return 'instantaneous pressure'
-double VelocityVerlet(double dt, int iter, FILE *fp);  
+double VelocityVerlet(double dt, int iter, FILE *fp, double distFac);  
 //  Compute Force using F = -dV/dr
 //  solve F = ma for use in Velocity Verlet
 void computeAccelerations();
@@ -87,7 +87,7 @@ int main()
   //  variable delcarations
   int i;
   double dt, Vol, Temp, Press, Pavg, Tavg, rho;
-  double VolFac, TempFac, PressFac, timefac;
+  double VolFac, TempFac, PressFac, timefac, distFac;
   double KE, PE, mvs, gc, Z;
   char trash[10000], prefix[1000], tfn[1000], ofn[1000], afn[1000];
   FILE *infp, *tfp, *ofp, *afp;
@@ -143,6 +143,7 @@ int main()
     PressFac = 8152287.336171632;
     TempFac = 10.864459551225972;
     timefac = 1.7572698825166272e-12;
+    distFac = 2.64e-10;
     //strcpy(atype,"He");
 
   }
@@ -152,6 +153,7 @@ int main()
     PressFac = 27223022.27659913;
     TempFac = 40.560648991243625;
     timefac = 2.1192341945685407e-12;
+    distFac = 2.74e-10;
     //strcpy(atype,"Ne");
 
   }
@@ -161,6 +163,7 @@ int main()
     PressFac = 51695201.06691862;
     TempFac = 142.0950000000000;
     timefac = 1.95403137760e-12;
+    distFac = 3.36e-10;
     //timefac = 2.09618e-12;
     //strcpy(atype,"Ar");
 
@@ -171,6 +174,7 @@ int main()
     PressFac = 59935428.40275003;
     TempFac = 199.1817584391428;
     timefac = 8.051563913585078e-13;
+    distFac = 3.58e-10;
     //strcpy(atype,"Kr");
 
   }
@@ -180,6 +184,7 @@ int main()
     PressFac = 70527773.72794868;
     TempFac = 280.30305642163006;
     timefac = 9.018957925790732e-13;
+    distFac = 3.80e-10;
     //strcpy(atype,"Xe");
 
   }
@@ -188,7 +193,8 @@ int main()
     VolFac = 3.7949992920124995e-29;
     PressFac = 51695201.06691862;
     TempFac = 142.0950000000000;
-    timefac = 2.09618e-12;
+    timefac = 1.95403137760e-12;
+    distFac = 3.36e-10;
     strcpy(atype,"Ar");
  
   }
@@ -305,7 +311,7 @@ int main()
     // This updates the positions and velocities using Newton's Laws
     // Also computes the Pressure as the sum of momentum changes from wall collisions / timestep
     // which is a Kinetic Theory of gasses concept of Pressure
-    Press = VelocityVerlet(dt, i+1, tfp);
+    Press = VelocityVerlet(dt, i+1, tfp, distFac);
     Press *= PressFac;
 
     //  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -528,7 +534,7 @@ void computeAccelerations() {
 }
 
 // returns sum of dv/dt*m/A (aka Pressure) from elastic collisions with walls
-double VelocityVerlet(double dt, int iter, FILE *fp) {
+double VelocityVerlet(double dt, int iter, FILE *fp, double distFac) {
   int i, j, k;
  
   double psum = 0.;
@@ -571,7 +577,7 @@ double VelocityVerlet(double dt, int iter, FILE *fp) {
   for (i=0; i<N; i++) {
     fprintf(fp,"%s",atype);
     for (j=0; j<3; j++) {
-      fprintf(fp,"  %12.10e ",r[i][j]);
+      fprintf(fp,"  %12.10e ",r[i][j]*distFac*1e10);
     }
     fprintf(fp,"\n");
   }
